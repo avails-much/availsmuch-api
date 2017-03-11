@@ -6,7 +6,7 @@ provider:
   name: aws
   runtime: nodejs4.3
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: "availsmuch-prayer-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
