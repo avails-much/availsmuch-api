@@ -13,20 +13,8 @@ module.exports.create = (event, context, callback) => {
     console.error('Validation Failed'); // eslint-disable-line no-console
     callback(new Error('Couldn\'t create the prayer.'));
     return;
-  }
+  };
   
-  function guid() {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1);
-      }
-      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-    }  
-    
-    
-
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
