@@ -1,0 +1,19 @@
+Serverless: Stack update finished...
+Service Information
+service: serverless-rest-api-with-dynamodb
+stage: dev
+region: us-east-1
+api keys:
+  None
+endpoints:
+  POST - https://3njqx9uoqd.execute-api.us-east-1.amazonaws.com/dev/todos
+  GET - https://3njqx9uoqd.execute-api.us-east-1.amazonaws.com/dev/todos
+  GET - https://3njqx9uoqd.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
+  PUT - https://3njqx9uoqd.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
+  DELETE - https://3njqx9uoqd.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
+functions:
+  serverless-rest-api-with-dynamodb-dev-create
+  serverless-rest-api-with-dynamodb-dev-list
+  serverless-rest-api-with-dynamodb-dev-get
+  serverless-rest-api-with-dynamodb-dev-update
+  serverless-rest-api-with-dynamodb-dev-delete
