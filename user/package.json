@@ -1,0 +1,11 @@
+{
+  "name": "availsmuch-api",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.6.7",
+    "uuid": "^2.0.3"
+  }
+}
