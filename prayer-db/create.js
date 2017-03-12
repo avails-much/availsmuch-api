@@ -9,7 +9,7 @@ module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
   console.log("event body = " + event.body);
   const data = JSON.parse(event.body);
-  if (typeof data.text !== 'string') {
+  if (typeof data.description !== 'string') {
     console.error('Validation Failed'); // eslint-disable-line no-console
     callback(new Error('Couldn\'t create the prayer.'));
     return;
@@ -19,10 +19,12 @@ module.exports.create = (event, context, callback) => {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
       id: uuid.v1(),
-      description: data.text,
-      checked: false,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      description: data.description,
+      owner: data.owner,
+      prayedForCount: 0, 
+      answered: data.answered,
+      created: timestamp,
+      answeredDate: data.answeredDate
     },
   };
 
