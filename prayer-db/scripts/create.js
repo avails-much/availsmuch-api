@@ -22,8 +22,9 @@ module.exports.create = (event, context, callback) => {
       description: data.description,
       owner: data.owner,
       prayedForCount: 0, 
-      answered: false,
-      created: timestamp
+      answered: data.answered,
+      created: timestamp,
+      answeredDate: data.answeredDate
     },
   };
 
