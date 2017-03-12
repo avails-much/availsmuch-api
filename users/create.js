@@ -9,22 +9,21 @@ module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
   console.log("event body = " + event.body);
   const data = JSON.parse(event.body);
-  if (typeof data.description !== 'string') {
+  if (typeof data.email !== 'string' || typeof data.firstName != 'string' || typeof data.lastName != 'string') {
     console.error('Validation Failed'); // eslint-disable-line no-console
-    callback(new Error('Couldn\'t create the prayer.'));
+    callback(new Error('Couldn\'t create the user.'));
     return;
   };
   
   const params = {
-    TableName: process.env.PRAYER_TABLE,
+    TableName: process.env.USER_TABLE,
     Item: {
       id: uuid.v1(),
-      description: data.description,
-      owner: data.owner,
-      prayedForCount: 0, 
-      answered: data.answered,
-      created: timestamp,
-      answeredDate: data.answeredDate
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      createdAt: timestamp,
+      updatedAt: timestamp,
     },
   };
 
@@ -35,14 +34,14 @@ module.exports.create = (event, context, callback) => {
       if (error) {
         
          console.error(error); // eslint-disable-line no-console
-         callback(new Error('Couldn\'t create the prayer request.'));
+         callback(new Error('Couldn\'t create the user.'));
          return;
       }
 
       // create a response
       const response = {
          statusCode: 200,
-         body: JSON.stringify(result.Item),
+         body: JSON.stringify(result.User),
       };
    callback(null, response);
 });

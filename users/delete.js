@@ -6,7 +6,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.delete = (event, context, callback) => {
   const params = {
-    TableName: process.env.PRAYER_TABLE,
+    TableName: process.env.USER_TABLE,
     Key: {
       id: event.pathParameters.id,
     },
@@ -17,7 +17,7 @@ module.exports.delete = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error); // eslint-disable-line no-console
-      callback(new Error('Couldn\'t remove the prayer request.'));
+      callback(new Error('Couldn\'t remove the user.'));
       return;
     }
 

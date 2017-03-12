@@ -6,7 +6,8 @@ provider:
   name: aws
   runtime: nodejs4.3
   environment:
-    DYNAMODB_TABLE: "availsmuch-prayer-${opt:stage, self:provider.stage}"
+    PRAYER_TABLE: "availsmuch-prayer-${opt:stage, self:provider.stage}"
+    USER_TABLE: "availsmuch-user-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -16,7 +17,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
@@ -32,7 +33,7 @@ functions:
           method: post
           cors: true
 
-  create:
+  createPrayer:
     handler: prayer-db/create.create
     events:
       - http:
@@ -40,7 +41,7 @@ functions:
           method: post
           cors: true
 
-  list:
+  listPrayers:
     handler:  prayer-db/list.list
     events:
       - http:
@@ -48,7 +49,7 @@ functions:
           method: get
           cors: true
 
-  get:
+  getPrayer:
     handler:  prayer-db/get.get
     events:
       - http:
@@ -56,7 +57,7 @@ functions:
           method: get
           cors: true
 
-  update:
+  updatePrayer:
     handler:  prayer-db/update.update
     events:
       - http:
@@ -64,11 +65,51 @@ functions:
           method: put
           cors: true
 
-  delete:
+  deletePrayer:
     handler:  prayer-db/delete.delete
     events:
       - http:
           path: prayers/{id}
+          method: delete
+          cors: true
+
+  createUser:
+    handler: users/create.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+
+  listUsers:
+    handler: users/list.list
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+
+  getUser:
+    handler: users/get.get
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
+
+  updateUser:
+    handler: users/update.update
+    events:
+      - http:
+          path: users/{id}
+          method: put
+          cors: true
+
+  deleteUser:
+    handler: users/delete.delete
+    events:
+      - http:
+          path: users/{id}
           method: delete
           cors: true
 
@@ -89,4 +130,20 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${self:provider.environment.PRAYER_TABLE}
+    userDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.USER_TABLE}

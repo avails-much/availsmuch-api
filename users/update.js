@@ -9,26 +9,24 @@ module.exports.update = (event, context, callback) => {
   const data = JSON.parse(event.body);
 
   // validation
-  if (typeof data.text !== 'string' || typeof data.checked !== 'boolean') {
+  if (typeof data.email !== 'string' || typeof data.firstName !== 'string' || typeof data.lastName != 'string') {
     console.error('Validation Failed'); // eslint-disable-line no-console
-    callback(new Error('Couldn\'t update the prayer request.'));
+    callback(new Error('Couldn\'t update the user.'));
     return;
   }
 
   const params = {
-    TableName: process.env.PRAYER_TABLE,
+    TableName: process.env.USER_TABLE,
     Key: {
       id: event.pathParameters.id,
     },
-    ExpressionAttributeNames: {
-      '#description': 'text',
-    },
     ExpressionAttributeValues: {
-      ':description': data.description,
-      ':checked': data.checked,
+      ':email': data.email,
+      ':firstName': data.firstName,
+      ':lastName': data.lastName,
       ':updatedAt': timestamp,
     },
-    UpdateExpression: 'SET #todo_text = :text, checked = :checked, updatedAt = :updatedAt',
+    UpdateExpression: 'SET email = :email, firstName = :firstName, lastName = :lastName, updatedAt = :updatedAt',
     ReturnValues: 'ALL_NEW',
   };
 
@@ -37,7 +35,7 @@ module.exports.update = (event, context, callback) => {
     // handle potential errors
     if (error) {
       console.error(error); // eslint-disable-line no-console
-      callback(new Error('Couldn\'t update the prayer request.'));
+      callback(new Error('Couldn\'t update the user.'));
       return;
     }
 
