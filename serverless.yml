@@ -1,4 +1,4 @@
-service: availsmuch-requests
+service: availsmuch
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -17,51 +17,64 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"      
 
 functions:
-  create:
-    handler: scripts/create.create
+  requests:
+    handler: requests/request.submit
     events:
       - http:
-          path: request
+          path: requests
+          method: post
+          cors: true
+
+  create:
+    handler: prayer-db/create.create
+    events:
+      - http:
+          path: prayers
           method: post
           cors: true
 
   list:
-    handler: scripts/list.list
+    handler:  prayer-db/list.list
     events:
       - http:
-          path: request
+          path: prayers
           method: get
           cors: true
 
   get:
-    handler: scripts/get.get
+    handler:  prayer-db/get.get
     events:
       - http:
-          path: request/{id}
+          path: prayers/{id}
           method: get
           cors: true
 
   update:
-    handler: scripts/update.update
+    handler:  prayer-db/update.update
     events:
       - http:
-          path: request/{id}
+          path: prayers/{id}
           method: put
           cors: true
 
   delete:
-    handler: scripts/delete.delete
+    handler:  prayer-db/delete.delete
     events:
       - http:
-          path: request/{id}
+          path: prayers/{id}
           method: delete
           cors: true
 
 resources:
   Resources:
-    prayerRequestDynamoDbTable:
+    prayerDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
