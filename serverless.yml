@@ -37,7 +37,7 @@ functions:
     handler: requests/request.delete
     events:
       - http:
-          path: requests
+          path: requests/{id}
           method: delete
           cors: true
 
