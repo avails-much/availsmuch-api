@@ -25,7 +25,7 @@ provider:
       Resource: "*"      
 
 functions:
-  requests:
+  submitRequests:
     handler: requests/request.submit
     events:
       - http:
@@ -33,44 +33,36 @@ functions:
           method: post
           cors: true
 
-  createPrayer:
-    handler: prayer-db/create.create
+  deleteRequests:
+    handler: requests/request.delete
     events:
       - http:
-          path: prayers
-          method: post
-          cors: true
-
-  listPrayers:
-    handler:  prayer-db/list.list
-    events:
-      - http:
-          path: prayers
-          method: get
-          cors: true
-
-  getPrayer:
-    handler:  prayer-db/get.get
-    events:
-      - http:
-          path: prayers/{id}
-          method: get
-          cors: true
-
-  updatePrayer:
-    handler:  prayer-db/update.update
-    events:
-      - http:
-          path: prayers/{id}
-          method: put
-          cors: true
-
-  deletePrayer:
-    handler:  prayer-db/delete.delete
-    events:
-      - http:
-          path: prayers/{id}
+          path: requests
           method: delete
+          cors: true
+
+  listRequests:
+    handler:  requests/request.list
+    events:
+      - http:
+          path: requests
+          method: get
+          cors: true
+
+  getRequest:
+    handler:  requests/request.get
+    events:
+      - http:
+          path: requests/{id}
+          method: get
+          cors: true
+
+  updateRequest:
+    handler:  requests/request.update
+    events:
+      - http:
+          path: requests/{id}
+          method: put
           cors: true
 
   createUser:
