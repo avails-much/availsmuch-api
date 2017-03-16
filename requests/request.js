@@ -43,56 +43,54 @@ function submit(event, context, callback) {
         callback(new Error('Couldn\'t create the prayer. Request must be a string.'));
         return;
     } else {
-        prayerDB.create(request,
-            (success) => {
+        prayerDB.create(request).then(
+            success => {
                 const response = {
                     statusCode: 200,
                     body: JSON.stringify(success),
                 };
                 callback(null, response);
             },
-            (failure) => { callback(new Error(result.failed)) }
+            failure => callback(new Error(result.failed))
         );
     }
 };
 
 function get(event, context, callback) {
-    prayerDB.get(event.pathParameters.id,
-        (success) => {
+    prayerDB.get(event.pathParameters.id).then(
+        success => {
             const response = {
                 statusCode: 200,
                 body: JSON.stringify(success.prayer),
             };
             callback(null, response);
         },
-        (failure) => callback(new Error(result.failed))
+        failure => callback(new Error(result.failed))
     );
 };
 
 function remove(event, context, callback) {
-    prayerDB.delete(event.pathParameters.id,
-        (success) => {
+    prayerDB.delete(event.pathParameters.id).then(
+        success => {
             const response = {
                 statusCode: 200,
                 body: JSON.stringify(success),
             };
             callback(null, response);
         },
-        (failure) => callback(new Error(failure.failed))
+        failure => callback(new Error(failure.failed))
     );
 };
 
 function list(event, context, callback) {
-    prayerDB.list(
-        (success) => {
+    prayerDB.list().then(
+        success => {
             const response = {
                 statusCode: 200,
                 body: JSON.stringify(success.prayers),
             };
             callback(null, response);
         },
-        (failure) => {
-            callback(new Error(result.failed));
-        }
+        failure => callback(new Error(result.failed))
     );
 };
