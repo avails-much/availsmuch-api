@@ -1,31 +1,98 @@
 'use strict';
 
-const prayer = require('../prayer-db/prayer');
+const prayerDB = require('../prayer-db/prayer-db');
 const AWS = require('aws-sdk');
 
-module.exports.submit = (event, context, callback) => {
-    //TODO: biz logic
-    prayer.create(event, context, callback);
+module.exports.router = (event, context, callback) => {
+
+    console.log("*********************** event: " + JSON.stringify(event));
+    
+    const collectionHandlers = {
+        "GET": list,
+        "POST": submit
+    }
+
+    const itemHandlers = {
+        "DELETE": remove,
+        "GET": get
+    }
+
+    let handlers = (event["pathParameters"] == null) ? collectionHandlers : itemHandlers;
+    let httpMethod = event["httpMethod"];
+
+    if (httpMethod in handlers) {
+        return handlers[httpMethod](event, context, callback);
+    } else {
+        console.error('*************** http method not found');
+        const response = {
+            statusCode: 405,
+            body: JSON.stringify({
+                message: `Invalid HTTP Method: ${httpMethod}`
+            }),
+        };
+
+        callback(null, response);
+    }
 };
 
-module.exports.get = (event, context, callback) => {
-    //TODO: biz logic
-    prayer.get(event, context, callback);
+function submit(event, context, callback) {
+    const request = JSON.parse(event.body);
+
+    if (typeof request.description !== 'string') {
+        console.error('Validation Failed'); // eslint-disable-line no-console
+        callback(new Error('Couldn\'t create the prayer. Request must be a string.'));
+        return;
+    } else {
+        prayerDB.create(request,
+            (success) => {
+                const response = {
+                    statusCode: 200,
+                    body: JSON.stringify(success),
+                };
+                callback(null, response);
+            },
+            (failure) => { callback(new Error(result.failed)) }
+        );
+    }
 };
 
-module.exports.delete = (event, context, callback) => {
-    //TODO: biz logic
-    prayer.delete(event, context, callback);
+function get(event, context, callback) {
+    prayerDB.get(event.pathParameters.id,
+        (success) => {
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(success.prayer),
+            };
+            callback(null, response);
+        },
+        (failure) => callback(new Error(result.failed))
+    );
 };
 
-module.exports.list = (event, context, callback) => {
-    //TODO: biz logic
-    prayer.list(event, context, callback);
+function remove(event, context, callback) {
+    prayerDB.delete(event.pathParameters.id,
+        (success) => {
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(success),
+            };
+            callback(null, response);
+        },
+        (failure) => callback(new Error(failure.failed))
+    );
 };
 
-module.exports.update = (event, context, callback) => {
-    //TODO: biz logic
-    prayer.update(event, context, callback);
+function list(event, context, callback) {
+    prayerDB.list(
+        (success) => {
+            const response = {
+                statusCode: 200,
+                body: JSON.stringify(success.prayers),
+            };
+            callback(null, response);
+        },
+        (failure) => {
+            callback(new Error(result.failed));
+        }
+    );
 };
-
-
