@@ -8,6 +8,7 @@ provider:
   environment:
     PRAYER_TABLE: "availsmuch-prayer-${opt:stage, self:provider.stage}"
     USER_TABLE: "availsmuch-user-${opt:stage, self:provider.stage}"
+    NOTIFICATION_TABLE: "availsmuch-notification-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,51 +19,18 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
-    - Effect: Allow
-      Action:
-        - lambda:InvokeFunction
-        - lambda:InvokeAsync
-      Resource: "*"      
-
+    
 functions:
-  submitRequests:
-    handler: requests/request.submit
+  prayerRequests:
+    handler: requests/request.router
     events:
       - http:
           path: requests
-          method: post
+          method: any
           cors: true
-
-  deleteRequests:
-    handler: requests/request.delete
-    events:
       - http:
           path: requests/{id}
-          method: delete
-          cors: true
-
-  listRequests:
-    handler:  requests/request.list
-    events:
-      - http:
-          path: requests
-          method: get
-          cors: true
-
-  getRequest:
-    handler:  requests/request.get
-    events:
-      - http:
-          path: requests/{id}
-          method: get
-          cors: true
-
-  updateRequest:
-    handler:  requests/request.update
-    events:
-      - http:
-          path: requests/{id}
-          method: put
+          method: any
           cors: true
 
   createUser:
