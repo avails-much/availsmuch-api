@@ -9,6 +9,7 @@ provider:
     PRAYER_TABLE: "availsmuch-prayer-${opt:stage, self:provider.stage}"
     USER_TABLE: "availsmuch-user-${opt:stage, self:provider.stage}"
     NOTIFICATION_TABLE: "availsmuch-notification-${opt:stage, self:provider.stage}"
+    GROUP_TABLE: "availsmuch-groups-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -30,6 +31,18 @@ functions:
           cors: true
       - http:
           path: requests/{id}
+          method: any
+          cors: true
+
+  groups:
+    handler: group/group.router
+    events:
+      - http:
+          path: groups
+          method: any
+          cors: true
+      - http:
+          path: groups/{id}
           method: any
           cors: true
 
