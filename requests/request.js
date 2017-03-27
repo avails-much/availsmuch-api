@@ -1,7 +1,6 @@
 'use strict';
 
-const prayerDB = require('../prayer-db/prayer-db');
-const AWS = require('aws-sdk');
+const prayerDB = require('../prayer/prayer-db');
 
 module.exports.router = (event, context, callback) => {
 
@@ -34,6 +33,7 @@ module.exports.router = (event, context, callback) => {
         callback(null, response);
     }
 };
+
 
 function submit(event, context, callback) {
     const request = JSON.parse(event.body);
